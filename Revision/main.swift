@@ -9,13 +9,13 @@ import Foundation
 
 
 @objc protocol ObjcProtocol {
-   @objc optional var property: String { get }
-   var anotherProperty: Double { get }
-   @objc optional func doSomething()
+    @objc optional var property: String { get }
+    var anotherProperty: Double { get }
+    @objc optional func doSomething()
 }
 class AdoptingClass:  ObjcProtocol {
-// doesn't have to implement `property` & `doSomething` requirements
-  var anotherProperty: Double { 0.0 }
+    // doesn't have to implement `property` & `doSomething` requirements
+    var anotherProperty: Double { 0.0 }
 }
 let protocolObject: ObjcProtocol = AdoptingClass()
 let property = protocolObject.property // Accessing optional property
@@ -60,8 +60,8 @@ var integer: UInt8 = UInt8.max
 print(MemoryLayout.size(ofValue: integer), integer, MemoryLayout<UInt64>.size, MemoryLayout<Int>.size, Int.max, UInt64.max)
 
 struct Puppy {
-  let age: Int
-  let isTrained: Bool
+    let age: Int
+    let isTrained: Bool
 }
 
 print(MemoryLayout<Int>.size + MemoryLayout<Bool>.size)
@@ -82,52 +82,52 @@ var printFn = add
 add(67,79,55)
 
 /*
-
-//merge 2 sorted arrays
-
-var a = [1,45,76,345,388,498,890]
-var b = [23,47,76,234,900]
-var c: Array<Int> = []
-var i = 0, j = 0
-while max(i, j) < min(a.count, b.count){
-    if a[i] < b[j]{
-        c.append(a[i])
-        i+=1
-    }
-    else{
-        c.append(b[j])
-        j+=1
-    }
-}
-if i == a.count{
-    while j < b.count{
-        c.append(b[j])
-        j+=1
-    }
-}
-else{
-    while i < a.count{
-        c.append(a[i])
-        i+=1
-    }
-}
-print(c)
-
-//first repeated character
-
-var string = "ajsyvdcqwbgvfascvybsdkuae"
-var count: Dictionary<Character, Int> = [:]
-
-for i in string{
-    if count[i] != nil {
-        break
-    }
-    else{
-        count[i] = 1
-    }
-    print(i, terminator: "")
-}
-
+ 
+ //merge 2 sorted arrays
+ 
+ var a = [1,45,76,345,388,498,890]
+ var b = [23,47,76,234,900]
+ var c: Array<Int> = []
+ var i = 0, j = 0
+ while max(i, j) < min(a.count, b.count){
+ if a[i] < b[j]{
+ c.append(a[i])
+ i+=1
+ }
+ else{
+ c.append(b[j])
+ j+=1
+ }
+ }
+ if i == a.count{
+ while j < b.count{
+ c.append(b[j])
+ j+=1
+ }
+ }
+ else{
+ while i < a.count{
+ c.append(a[i])
+ i+=1
+ }
+ }
+ print(c)
+ 
+ //first repeated character
+ 
+ var string = "ajsyvdcqwbgvfascvybsdkuae"
+ var count: Dictionary<Character, Int> = [:]
+ 
+ for i in string{
+ if count[i] != nil {
+ break
+ }
+ else{
+ count[i] = 1
+ }
+ print(i, terminator: "")
+ }
+ 
  */
 
 extension Apple{
@@ -191,7 +191,7 @@ enum Numbers: Float{
 print(Numbers.three.rawValue, Numbers.two.rawValue, Numbers.one.rawValue)
 
 enum Numbers1: String{
-    case one
+    case one1
     case two
     case three = "ol"
     case four
@@ -213,21 +213,25 @@ struct Lazy{
 }
 
 var testLazy = Lazy(n: "hi")
+print(MemoryLayout.size(ofValue: testLazy))
 print("init")
 testLazy.property()
 testLazy.property1()
+print(MemoryLayout.size(ofValue: testLazy))
 
-/*
+
 class InterviewTest {
-var name: String
-lazy var greeting : String = { return "Hello \(self.name)" }()
-init(name: String) {
-self.name = name
- }
+    var name: String
+    lazy var greeting : String = { return "Hello \(self.name)" }()
+    init(name: String) {
+        self.name = name
+    }
 }
 let testObj = InterviewTest(name:"abhi")
-testObj.greeting
-*/
+print("Size before lazy:\(MemoryLayout.size(ofValue: testObj))")
+print(testObj.greeting)
+print("Size after lazy:\(MemoryLayout.size(ofValue: testObj))")
+
 
 var set: Set<Int> = []
 set.insert(12)
@@ -288,6 +292,9 @@ struct Rect {
             origin.y = newCenter.y - (size.height / 2)
         }
     }
+    subscript(size: Size) -> Rect{
+        Rect(origin: Point(x: 0, y: 0), size: size)
+    }
 }
 var square = Rect(origin: Point(x: 0.0, y: 0.0),
                   size: Size(width: 10.0, height: 10.0))
@@ -295,3 +302,83 @@ let initialSquareCenter = square.center
 square.center = Point(x: 15.0, y: 15.0)
 print("square.origin is now at (\(square.origin.x), \(square.origin.y))")
 
+
+print(square[Size(width: 98, height: 12)].center)
+
+
+
+@dynamicMemberLookup
+struct Person {
+    var name = "Kumar"
+    subscript(dynamicMember member: String) -> String { //shld be expressible by string only
+        let properties = ["name": "Taylor Swift", "city": "Nashville", "1": "one"] as [AnyHashable : String]
+        return properties[member, default: ""]
+    }
+}
+let taylor = Person()
+print(taylor.name)
+print(taylor.city)
+print(taylor.favoriteIceCream)
+print(taylor.1)
+
+
+@propertyWrapper
+struct Age {
+    private var number = 0
+    var wrappedValue: Int {
+        get { return number }
+        set { number = min(newValue, 118) }
+    }
+}
+
+struct Human {
+    @Age var age : Int
+}
+var human = Human()
+print(human.age)
+human.age = 12
+print(human.age)
+human.age = 234
+print(human.age)
+
+class StepCounter {
+    var totalSteps: Int = 0 {
+        willSet(newTotalSteps) {
+            print("About to set totalSteps to \(newTotalSteps)")
+        }
+        didSet {
+            if totalSteps > oldValue  {
+                print("Added \(totalSteps - oldValue) steps")
+            }
+        }
+    }
+}
+let stepCounter = StepCounter()
+stepCounter.totalSteps = 200
+stepCounter.totalSteps = 360
+stepCounter.totalSteps = 896
+
+withUnsafePointer(to: stepCounter){
+    print(MemoryLayout.size(ofValue: $0))
+    print(MemoryLayout.stride(ofValue: $0))
+    print(MemoryLayout.alignment(ofValue: $0))
+}
+
+
+var one11 = Numbers1.one1
+print(one11.rawValue)
+
+let string = "The rain in Spain"
+let range = string.range(of: "rain", options: [.caseInsensitive, .backwards])
+
+var arrayList = Array<Int>()
+
+struct Container<E>{
+    var arr: Array<E>
+    var typeOf: E.Type{
+        return E.self
+    }
+}
+
+var container1 = Container(arr: [Character("a"), Character("b"), "\u{1F603}", "\n"])
+print(container1.typeOf)
