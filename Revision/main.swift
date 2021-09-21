@@ -378,7 +378,97 @@ struct Container<E>{
     var typeOf: E.Type{
         return E.self
     }
+    init(arr: Array<E>) {
+        self.arr = arr
+    }
 }
 
 var container1 = Container(arr: [Character("a"), Character("b"), "\u{1F603}", "\n"])
 print(container1.typeOf)
+
+func inoutCheck (a: inout Int){
+    a+=1
+}
+var testInout = 21
+inoutCheck(a: &testInout)
+print(testInout)
+
+enum ASCIIControlCharacter: Character {
+    case tab = "\t"
+    case lineFeed = "\n"
+    case carriageReturn = "\r"
+}
+
+print(ASCIIControlCharacter.tab.rawValue)
+
+@propertyWrapper
+class TwelveOrLess {
+    private var number = 0
+    var wrappedValue: Int {
+        get { return number }
+        set { number = min(newValue, 12) }
+    }
+}
+struct SmallRectangle {
+    @TwelveOrLess var height: Int
+    @TwelveOrLess var width: Int
+}
+
+var rectangle = SmallRectangle()
+print(rectangle.height)
+
+rectangle.height = 10
+print(rectangle.height)
+
+rectangle.height = 24
+print(rectangle.height)
+
+
+enum WeekDay: Int, CaseIterable{
+    case sunday = 1
+    case monday = 12
+    case tuesday = 34
+    case wednesday = 344
+    case thursday = 04
+    case friday = 0o12
+    case saturday = 0x993
+}
+var today = WeekDay.tuesday
+var tomorrow = WeekDay.wednesday
+print(today == WeekDay.tuesday)
+
+
+enum WeekDay1: CaseIterable{
+    case sunday
+    case monday
+    case tuesday
+    case wednesday
+    case thursday
+    case friday
+    case saturday
+}
+
+print(WeekDay1.allCases)
+// why it prints [Revision.WeekDay1.sunday, Revision.WeekDay1.monday, Revision.WeekDay1.tuesday, Revision.WeekDay1.wednesday, Revision.WeekDay1.thursday, Revision.WeekDay1.friday, Revision.WeekDay1.saturday] ... what is Revision
+
+infix operator +
+func +(lhs: Character, rhs: Int) -> Character?{
+    if let ascii = lhs.asciiValue{
+        if let usc = UnicodeScalar(Int(ascii) + rhs){
+            return Character(usc)
+        }else{
+            return nil
+        }
+    }else{
+        return nil
+    }
+}
+
+print("\((Character("a")+12)!)")
+
+
+extension Numbers1: CaseIterable{
+    
+}
+print(Numbers1.allCases.sorted(by: {$0.rawValue < $1.rawValue}))
+
