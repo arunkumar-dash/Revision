@@ -21,6 +21,8 @@ let protocolObject: ObjcProtocol = AdoptingClass()
 let property = protocolObject.property // Accessing optional property
 protocolObject.doSomething?() // Calling optional method
 
+
+
 struct Apple{
     let price: Float = 90.56
     func printDetails() -> Void {
@@ -79,54 +81,6 @@ func add(_ arr: Int...){
 var printFn = add
 add(67,79,55)
 
-/*
- 
- //merge 2 sorted arrays
- 
- var a = [1,45,76,345,388,498,890]
- var b = [23,47,76,234,900]
- var c: Array<Int> = []
- var i = 0, j = 0
- while max(i, j) < min(a.count, b.count){
- if a[i] < b[j]{
- c.append(a[i])
- i+=1
- }
- else{
- c.append(b[j])
- j+=1
- }
- }
- if i == a.count{
- while j < b.count{
- c.append(b[j])
- j+=1
- }
- }
- else{
- while i < a.count{
- c.append(a[i])
- i+=1
- }
- }
- print(c)
- 
- //first repeated character
- 
- var string = "ajsyvdcqwbgvfascvybsdkuae"
- var count: Dictionary<Character, Int> = [:]
- 
- for i in string{
- if count[i] != nil {
- break
- }
- else{
- count[i] = 1
- }
- print(i, terminator: "")
- }
- 
- */
 
 extension Apple{
     subscript(a: Int) -> Int{
@@ -725,5 +679,6 @@ class Test{
         self.a = a
     }
 }
+
 
 
