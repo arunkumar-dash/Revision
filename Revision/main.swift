@@ -21,7 +21,6 @@ let protocolObject: ObjcProtocol = AdoptingClass()
 let property = protocolObject.property // Accessing optional property
 protocolObject.doSomething?() // Calling optional method
 
-
 struct Apple{
     let price: Float = 90.56
     func printDetails() -> Void {
@@ -54,7 +53,6 @@ struct Apple{
 var testApple = Apple()
 testApple.printDetails()
 testApple.testSmallApple.testSmallSmallApple.printDetails(a2: 6)
-
 print(type(of: String(89.description)))
 var integer: UInt8 = UInt8.max
 print(MemoryLayout.size(ofValue: integer), integer, MemoryLayout<UInt64>.size, MemoryLayout<Int>.size, Int.max, UInt64.max)
@@ -471,4 +469,261 @@ extension Numbers1: CaseIterable{
     
 }
 print(Numbers1.allCases.sorted(by: {$0.rawValue < $1.rawValue}))
+
+struct Mobile: Sequence{
+    let name: String
+    var version: Float
+    func makeIterator() -> some IteratorProtocol {
+        return VersionItr(version: version)
+    }
+}
+struct VersionItr: IteratorProtocol{
+    var version: Float
+    mutating func next() -> Float? {
+        if version > 11{
+            return nil
+        }
+        else{
+            defer {
+                version = version + 0.52
+            }
+            return round(version*100)/100
+        }
+    }
+}
+
+var motorola = Mobile(name: "motog4", version: 6.5)
+for i in motorola{
+    print(i)
+}
+
+
+struct Date: Equatable {
+    var daysAfterY2K: Int
+
+}
+
+extension Date: Strideable {
+    func advanced(by n: Float) -> Date {
+        var result = self
+        result.daysAfterY2K += Int(n)
+        return result
+    }
+
+    func distance(to other: Date) -> Float {
+        return Float(other.daysAfterY2K - self.daysAfterY2K)
+    }
+}
+
+for i in stride(from: Date(daysAfterY2K: 500), to: Date(daysAfterY2K: 560), by: 6){
+    print(i)
+}
+
+struct Gender: OptionSet{
+    let rawValue: Int8
+    static let male = Gender(rawValue: 1)
+    static let female = Gender(rawValue: 2)
+    static let anotherMale = Gender(rawValue: 1)
+}
+
+var testGender: Gender = .female
+
+var stringTemp = "string"
+//string index
+var stringTemp1 = "newstring"
+
+var thirdString = "\(stringTemp) \(stringTemp1)"
+print(thirdString + stringTemp1, stringTemp1.count)
+
+for i in 0..<stringTemp.count{
+    print(stringTemp[stringTemp.index(stringTemp.startIndex, offsetBy: i)])
+}
+
+var arr: Array = [1, 2, 3]
+arr.append(4)
+arr.append(contentsOf: [1, 3])
+print(arr.customMirror)
+print(arr.distance(from: 0, to: 3))
+print(arr.index(1, offsetBy: 2), type(of: arr.index(1, offsetBy: 2)))
+print(arr.index(1, offsetBy: 3, limitedBy: 4))
+print(arr.remove(at: 2))
+print(arr)
+var arr1 = [9,90]
+arr.replaceSubrange(1...3, with: [2,90])
+print(arr)
+//ArraySlice<Int>
+//RangeExpression
+//ReversedCollection
+//RangeReplaceableCollection
+//EnumeratedSequence
+//RandomNumberGenerator
+//RandomAccessCollection
+//JoinedSequence
+//BidirectionalCollection
+//CollectionDifference
+//Dictionary
+//Substring
+
+
+
+var dictionary: Dictionary = [3: "zg", 5: "sdf", 4: "EFCc"]
+print(dictionary.filter({$0 > $1.count}))
+print(dictionary.max(by: {$0.value > $1.value}))
+
+//Set
+var set1: Set = [1,2,3,4,3,3,6,5,5,5,45,4]
+
+//print(set1.distance(from: set1.firstIndex(of: 1)!, to: set1.firstIndex(of: 45)!))
+
+print(String(12, radix: 2))
+
+struct AnimalRanking: RangeExpression, Comparable, Strideable, LosslessStringConvertible, Hashable{
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(name)
+        hasher.combine(rank)
+    }
+    
+    init?(_ description: String) {
+        self.description = description
+        let split = description.split(separator: " ")
+        self.name = String(split[0])
+        let c = split[3].index(before: split[3].endIndex)
+        if let temp = Int(split[3][..<c]){
+            self.rank = temp
+        }
+        else{
+            return nil
+        }
+    }
+    
+    var description: String
+    
+    init(name: String, rank: Int) {
+        self.name = name
+        self.rank = rank
+        description = "\(name) with rank \(rank)."
+    }
+    
+    func relative<C>(to collection: C) -> Range<Int> where C : Collection, Int == C.Index {
+        if rank >= collection.startIndex{
+            return Range(collection.startIndex...rank)
+        }
+        return Range(rank...collection.endIndex)
+    }
+    
+    func contains(_ element: Int) -> Bool {
+        return element == rank
+    }
+    
+    func distance(to other: AnimalRanking) -> Int {
+        return other.rank - self.rank
+    }
+    
+    func advanced(by n: Int) -> AnimalRanking {
+        var temp = self
+        temp.rank += n
+        return temp
+    }
+    
+    var name: String
+    var rank: Int
+    static func ==(lhs: AnimalRanking, rhs: AnimalRanking) -> Bool{
+        return lhs.rank == rhs.rank
+    }
+    static func <(lhs: AnimalRanking, rhs: AnimalRanking) -> Bool{
+        return lhs.rank < rhs.rank
+    }
+}
+
+let lion = AnimalRanking(name: "lion", rank: 1)
+let tiger = AnimalRanking(name: "tiger", rank: 2)
+let tigress = AnimalRanking(name: "tigress", rank: 2)
+let bear = AnimalRanking(name: "bear", rank: 9)
+
+for i in lion...bear{
+    print(i.rank)
+}
+
+print(String(lion))
+print(stringTemp.prefix(while: {$0 != Character("n")}))
+
+var arrayTemp: [Int] = []
+for i in 0...10000{
+    if ("0"..."211").contains(String(i)){
+        arrayTemp.append(i)
+    }
+}
+//print(arrayTemp)
+
+print(Array("Index".indices))
+print(Array("Indiabcde".indices))
+
+var str = "fthg"
+var strIndex = str.startIndex
+strIndex = str.index(after: str.index(after: strIndex))
+print(strIndex, str.index(after: strIndex), str.index(after: str.index(after: strIndex)))
+print(str.formIndex(after: &strIndex))
+print(strIndex, str.startIndex, str.index(after: strIndex), str[strIndex])
+
+print(Array("oiugkĮA".utf16))
+
+str.replaceSubrange(str.index(after: str.startIndex)...strIndex, with: "oj990")
+print(str)
+
+let numbers = ["1", "2", "Fish"]
+let integers = numbers.compactMap { Int($0) }
+print(integers)
+
+var aSet = Set([1,2])
+
+let data: [Any?] = ["Bill", nil, 69, "Ted"]
+
+for datum in data where datum is String? {
+    print(datum)
+}
+
+for case let .some(datum) in data where datum is String {
+    print(datum)
+}
+
+
+struct Home{
+    var mother: Bool
+    var father: Bool
+    static var building = true
+}
+
+let home = Home(mother: true, father: true)
+//print(home.building) //Compile Error: Static member 'building' cannot be used on instance of type 'Home'
+
+
+var num1 = 1, num2 = 2, num3 = 3, num4 = 2
+if num1 != num2 , num2 == num4 , num3 > num4{
+    print("all true")
+} else{
+    print("false")
+}
+
+var someVar: Hasher = Hasher()
+someVar.combine(1)
+someVar.combine(2)
+someVar.combine(3)
+print(someVar.finalize())
+someVar.combine(4)
+print(someVar.finalize())
+
+var string1 = "full string"
+var substring1 = string1[(string1.firstIndex(of: "s") ?? string1.startIndex) ..< string1.endIndex]
+print(string1 ~= substring1)
+
+print("🇮🇳".utf8.map{Character(UnicodeScalar($0))})
+
+class Test{
+    var a: Int
+    init(_ a: Int){
+        self.a = a
+    }
+}
+
 
