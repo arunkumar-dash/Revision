@@ -680,5 +680,20 @@ class Test{
     }
 }
 
+func mass(kg a: Int)throws->Int{
+    if 0==a{
+        throw TestError.error2
+    }
+    return 1
+}
+do{
+    try print(mass(kg: 0))
+} catch is TestError{
+    print("caught 'em")
+}
 
+enum TestError: Error{
+    case error1
+    case error2
+}
 
